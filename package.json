@@ -1,0 +1,18 @@
+{
+  "name": "meteor-spec",
+  "version": "0.0.1",
+  "description": "Specification for Meteor Project",
+  "author": "Weiming Zhai",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/wmzhai/meteor-spec.git"
+  },
+  "scripts": {
+    "build": "mkdir -p out; cp resources/*.css out; spec-md content/index.md > out/index.html",
+    "serve": "cd out && python -m SimpleHTTPServer",
+    "watch": "onchange './content/*.md' -- npm run build",
+    "deploy": "sh ./resources/deploy.sh",
+    "clean": "rm -rf out"
+  }
+}
