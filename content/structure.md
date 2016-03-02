@@ -21,4 +21,51 @@
 
 ## 目录结构
 
-这里基于[todos](https://github.com/meteor/todos)项目给出一个推荐的目录结构
+这里基于[todos](https://github.com/meteor/todos)项目给出一个推荐的目录结构。
+
+```
+-.meteor          项目相关信息
+  -local          本地生成文件，需要gitignore
+  packages        项目用到的meteor包列表，增减package可以直接编辑这个文件
+  platform        支持平台列表，可以是server,browser,android,ios
+  release         Meteor的主版本号，比如`METEOR@1.3`
+  versions        每个meteor包的版本号
+-client           客户端初始化内容
+  main.js         通常是import了`imports/startup/client`目录下的内容
+  main.less       通常是import了'imports/ui/'下面的一些内容
+-i18n             多语言设置
+  en.i18n.json    英语
+-imports          可以import的文件
+  -api            每个子目录是一部分内容的api
+    -lists
+      -server
+        publications.js
+      lists.js
+      lists.tests.js
+      methods.js
+    -...
+  -startup        
+    -client
+      routes.js
+    -server
+      fixtures.js
+      register-api.js
+      security.js
+  -ui             界面部分，多级子目录组成
+    -stylesheets  样式文件
+    -layouts      布局
+    -components   组件
+-node_modules     npm安装的module，每个一个子目录，通过npm install方式添加
+-packages         meteor包，每个一个子目录, 可以直接添加或者通过submodule方式添加
+-public
+  -font           字体
+  -icon           图标
+-resources        项目资源
+-server           服务端初始化内容
+  main.js
+.gitignore        
+.gitmodules
+mobile-config.js
+package.json
+README.md
+```
