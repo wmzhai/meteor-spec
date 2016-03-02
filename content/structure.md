@@ -4,10 +4,13 @@
 
 ## 目录含义
 
-在Meteor项目里，一般的文件都会在client与server端同时加载，不过下面这些目录都有着特殊的含义：
+Meteor的特点在于客户端和服务端共享代码，所以在Meteor项目里，一般不做特殊限制的文件都会在client与server端同时加载。
+
+下面这些目录都有着特殊的含义：
 
 * **client** client目录下的文件仅在客户端加载
 * **server** server目录下的文件仅在服务端加载
+* **imports**
 * **public** public目录下的文件可以在客户端访问，访问这些文件时将public目录是为根目录。比如访问`public/bg.png`的url是`/bg.png`。
 * **private** 仅服务端可访问，通过Assets的API访问。
 * **tests** 目录并不在任何地方加载，仅用于测试代码。
@@ -21,7 +24,12 @@
 
 ## 目录结构
 
-这里基于[todos](https://github.com/meteor/todos)项目给出一个推荐的目录结构。
+Meteor项目推荐的目录结构有几点简要说明：
+
+* Meteor里面的目录结构是主要按照特性来区分的，而不仅是client/server形式
+* LESS文件和Components放在同一目录下（就近原则）
+* 每个文件一个单元， 包括template, component, method 和 test等
+* 常规项目可以参考[todos](https://github.com/meteor/todos)的目录结构如下(Blaze&React)
 
 ```
 -.meteor          项目相关信息
@@ -36,7 +44,7 @@
 -i18n             多语言设置
   en.i18n.json    英语
 -imports          可以import的文件
-  -api            每个子目录是一部分内容的api
+  -api            数据相关内容放在api目录下
     -lists
       -server
         publications.js
@@ -51,10 +59,12 @@
       fixtures.js
       register-api.js
       security.js
-  -ui             界面部分，多级子目录组成
+  -ui             界面部分，多级子目录组成，React项目和Blaze项目的主要区别就是这个目录里的内容
     -stylesheets  样式文件
     -layouts      布局
+    -containers   容器
     -components   组件
+    -helpers      Helper功能
 -node_modules     npm安装的module，每个一个子目录，通过npm install方式添加
 -packages         meteor包，每个一个子目录, 可以直接添加或者通过submodule方式添加
 -public
