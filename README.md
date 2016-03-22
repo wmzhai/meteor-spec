@@ -1,3 +1,7 @@
 # Meteor项目规范
 
-假设阅读者具备初级水平，针对具体问题提出具体规范要求，不详细解释原理
+```
+npm i spec-md -g
+npm i onchange -g
+npm run write
+```
