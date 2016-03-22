@@ -39,31 +39,35 @@ Meteor项目推荐的目录结构有几点简要说明：
   release         Meteor的主版本号，比如`METEOR@1.3`
   versions        每个meteor包的版本号
 -client           客户端初始化内容
+  head.html       HTML <head>部分
   main.js         通常是import了`imports/startup/client`目录下的内容
   main.less       通常是import了'imports/ui/'下面的一些内容
 -i18n             多语言设置
   en.i18n.json    英语
 -imports          可以import的文件
-  -api            数据相关内容放在api目录下
-    -lists
+  -api            数据相关内容放在api目录下，包括Collection，Schema，Method和Publication
+    -lists        每个数据集一个子目录
       -server
-        publications.js
-      lists.js
-      lists.tests.js
-      methods.js
+        publications.js 发布数据在这里
+      lists.js          Collection, Schema, Allow/Deny, publicFields,helpers
+      lists.tests.js    针对数据的测试
+      methods.js        通过ValidatedMethod定义的方法
     -...
-  -startup        
-    -client
-      routes.js
-    -server
-      fixtures.js
-      register-api.js
-      security.js
+  -startup             启动代码
+    -client             客户端启动代码
+      index.js          按顺序引入这个目录下的文件
+      routes.js         客户端路由，用FlowRouter表示
+    -server            服务端启动代码
+      index.js          按顺序引入这个目录下的文件
+      fixtures.js       seed数据填充
+      register-api.js   注册api，就是import methods和publication
+      security.js       安全代码
   -ui             界面部分，多级子目录组成，React项目和Blaze项目的主要区别就是这个目录里的内容
+    -accounts     账号相关
     -stylesheets  样式文件
     -layouts      布局
     -containers   容器
-    -components   组件
+    -components   功能组件
     -helpers      Helper功能
 -node_modules     npm安装的module，每个一个子目录，通过npm install方式添加
 -packages         meteor包，每个一个子目录, 可以直接添加或者通过submodule方式添加
@@ -71,11 +75,13 @@ Meteor项目推荐的目录结构有几点简要说明：
   -font           字体
   -icon           图标
 -resources        项目资源
--server           服务端初始化内容
-  main.js
+  -icon           app的图标
+  -splash         app的splash
+-server           服务端初始化内容，仅包含main.js一个文件
+  main.js         
 .gitignore        
 .gitmodules
 mobile-config.js
-package.json
+package.json     
 README.md
 ```
