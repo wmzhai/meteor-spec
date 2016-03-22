@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><!-- Built with spec-md --><head><meta charset="utf-8"><title>Meteor项目规范</title><link href="spec.css" rel="stylesheet"><link href="highlight.css" rel="stylesheet"></head><body><header><h1>Meteor项目规范</h1><section id="intro"><p><strong>简介</strong></p><p>假设阅读者具备初级水平，针对具体问题提出具体规范要求，不详细解释原理。</p></section><div class="spec-toc"><ol><li><a href="#sec-undefined.-"><span class="spec-secid">1</span>项目结构</a><ol><li><a href="#sec-undefined.-.-"><span class="spec-secid">1.1</span>目录含义</a></li><li><a href="#sec-undefined.-.-"><span class="spec-secid">1.2</span>加载顺序</a></li><li><a href="#sec-undefined.-.-"><span class="spec-secid">1.3</span>目录结构</a></li></ol></li><li><a href="#sec-undefined.-"><span class="spec-secid">2</span>数据库</a></li><li><a href="#sec-undefined.-"><span class="spec-secid">3</span>数据加载</a></li><li><a href="#sec-undefined.-"><span class="spec-secid">4</span>路由</a></li><li><a href="#sec-undefined.-"><span class="spec-secid">5</span>测试</a></li><li><a href="#sec-undefined.-"><span class="spec-secid">6</span>代码规范</a></li></ol></div></header><section id="sec-undefined.-"><h2><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-">1</a></span>项目结构</h2><p>在Rails之类的系统里，对项目结构做出了严格的要求，每个不同项目的目录结构都是一致的，这样的结构对于项目的规范化以及理解是比较有帮助的。目前在Meteor项目里面，没有明确的目录标准，对于一个特定的团队来说，对目录作出一定的约束还是比较有必要的。</p><section id="sec-undefined.-.-"><h3><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-.-">1.1</a></span>目录含义</h3><p>Meteor的特点在于客户端和服务端共享代码，所以在Meteor项目里，一般不做特殊限制的文件都会在client与server端同时加载。</p><p>下面这些目录都有着特殊的含义：</p><ul><li><strong>client</strong> client目录下的文件仅在客户端加载</li><li><strong>server</strong> server目录下的文件仅在服务端加载</li><li><strong>imports</strong></li><li><strong>public</strong> public目录下的文件可以在客户端访问，访问这些文件时将public目录是为根目录。比如访问<code>public/bg.png</code>的url是<code>/bg.png</code>。</li><li><strong>private</strong> 仅服务端可访问，通过Assets的API访问。</li><li><strong>tests</strong> 目录并不在任何地方加载，仅用于测试代码。</li><li><strong>node_modules</strong> 放置npm安装的包，它并不被meteor直接加载，需要通过特定方式使用</li><li><strong>packages</strong> 本地的meteor包，不直接加载</li><li><strong>.</strong> 以.开头的目录或文件，不加载，比如.meteor和.git</li></ul></section><section id="sec-undefined.-.-"><h3><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-.-">1.2</a></span>加载顺序</h3><p>从Meteor1.3开始，引入module机制，从而可以比较方便的控制文件加载的顺序，1.2以前的规则就不用考虑了。</p></section><section id="sec-undefined.-.-"><h3><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-.-">1.3</a></span>目录结构</h3><p>Meteor项目推荐的目录结构有几点简要说明：</p><ul><li>Meteor里面的目录结构是主要按照特性来区分的，而不仅是client/server形式</li><li>LESS文件和Components放在同一目录下（就近原则）</li><li>每个文件一个单元， 包括template, component, method 和 test等</li><li>常规项目可以参考<a href="https://github.com/meteor/todos">todos</a>的目录结构如下(Blaze&amp;React)</li></ul><pre><code>-.meteor          项目相关信息
+  -local          本地生成文件，需要gitignore
+  packages        项目用到的meteor包列表，增减package可以直接编辑这个文件
+  platform        支持平台列表，可以是server,browser,android,ios
+  release         Meteor的主版本号，比如`METEOR@1.3`
+  versions        每个meteor包的版本号
+-client           客户端初始化内容
+  head.html       HTML &lt;head&gt;部分
+  main.js         通常是import了`imports/startup/client`目录下的内容
+  main.less       通常是import了&#x27;imports/ui/&#x27;下面的一些内容
+-i18n             多语言设置
+  en.i18n.json    英语
+-imports          可以import的文件
+  -api            数据相关内容放在api目录下，包括Collection，Schema，Method和Publication
+    -lists        每个数据集一个子目录
+      -server
+        publications.js 发布数据在这里
+      lists.js          Collection, Schema, Allow/Deny, publicFields,helpers
+      lists.tests.js    针对数据的测试
+      methods.js        通过ValidatedMethod定义的方法
+    -...
+  -startup             启动代码
+    -client             客户端启动代码
+      index.js          按顺序引入这个目录下的文件
+      routes.js         客户端路由，用FlowRouter表示
+    -server            服务端启动代码
+      index.js          按顺序引入这个目录下的文件
+      fixtures.js       seed数据填充
+      register-api.js   注册api，就是import methods和publication
+      security.js       安全代码
+  -ui             界面部分，多级子目录组成，React项目和Blaze项目的主要区别就是这个目录里的内容
+    -accounts     账号相关
+    -stylesheets  样式文件
+    -layouts      布局
+    -containers   容器
+    -components   功能组件
+    -helpers      Helper功能
+-node_modules     npm安装的module，每个一个子目录，通过npm install方式添加
+-packages         meteor包，每个一个子目录, 可以直接添加或者通过submodule方式添加
+-public
+  -font           字体
+  -icon           图标
+-resources        项目资源
+  -icon           app的图标
+  -splash         app的splash
+-server           服务端初始化内容，仅包含main.js一个文件
+  main.js         
+.gitignore        
+.gitmodules
+mobile-config.js
+package.json     
+README.md
+</code></pre></section></section><section id="sec-undefined.-"><h2><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-">2</a></span>数据库</h2><p>如何定义、使用和维护MongodB的数据库。 </p></section><section id="sec-undefined.-"><h2><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-">3</a></span>数据加载</h2></section><section id="sec-undefined.-"><h2><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-">4</a></span>路由</h2></section><section id="sec-undefined.-"><h2><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-">5</a></span>测试</h2></section><section id="sec-undefined.-"><h2><span class="spec-secid" title="link to this section"><a href="#sec-undefined.-">6</a></span>代码规范</h2><ul><li><strong>目录</strong><ul><li>全小写字母命名</li></ul></li><li><strong>Collection</strong><ul><li>命名采用复数</li><li>实例变量采用首字母大写驼峰复数</li><li>数据库里面的Collection名称与实例变量一致</li><li>MongodB里面的字段采用camel&#8208;cased</li></ul></li><li><strong>Schema</strong><ul><li>直接在实例定义以后添加，比如 <code>Todos.schema = new SimpleSchema({})</code></li><li>attach形式，比如：<code>Todos.attachSchema(Todos.schema);</code></li></ul></li><li><strong>Methods和publications</strong><ul><li>Camel cased，采用点做命名空间(namespace)的分隔</li><li>使用mdg:validated&#8208;method来使用methods</li></ul></li><li><strong>Packages，文件和exports</strong><ul><li>使用ES2015exports</li><li>每个文件表示单个逻辑模块，而不是使用一个类似utils.js的文件exports一堆不相关功能</li><li>如果一个文件定义了一个类或者component，这个文件需要采用命名一致的小写模式文件名</li></ul></li><li><strong>Blaze Template</strong><ul><li>Blaze的Template需要采用点来做命名空间，因为他们不可以作为module来export</li><li>同一个Template的HTML，CSS和JS文件应该采用同样的文件名</li></ul></li><li><strong>React Components</strong><ul><li>按照正常的JavaScript模块和函数处理</li></ul></li><li><strong>路由</strong></li><li><strong>避免使用jQuery</strong></li><li><strong>Server 代码善用 throw new Meteor.Error</strong> </li></ul></section><footer>Written in <a href="http://leebyron.com/spec-md/" target="_blank">Spec Markdown</a>.</footer></body></html>
